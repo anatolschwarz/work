@@ -9,9 +9,10 @@ Support case: customer reports lip-sync issues on **Kaltura web players** (VOD).
 ## Goal
 Measure the asset's baked-in audio/video sync and report a defensible offset figure (e.g. "within ±X ms → file not at fault").
 
-## State (updated 2026-07-22)
+## State (updated 2026-07-23)
+- **Tool packaged + checked into git.** The SyncNet tool now lives in the separate `tools` repo at `tools/syncnet-lipsync/` (GitHub, private, pushed) — vendored SyncNet + `sync_offset.py` + `salvage_crops.py`, with `README.md`/`INSTALL.md`/`requirements.txt`. This folder (`work/SUP-52486-lipsync/`, in the `work` repo, pushed) is the **case record** only — no tool code. Improvement made while packaging: `sync_offset.py` now **streams each timing's result** as it is computed (was buffered to the end → a crash lost everything and forced the salvage script); re-validated against the prior 4-timing rendition run — identical numbers (+80 ms, matching confidences).
 - **DIY estimator (v1) — ARCHIVED.** mediapipe mouth-openness × audio RMS envelope, cross-correlated. Too noisy to lock on 540p lecture footage (max conf ~0.24). `older_versions/diy/`.
-- **SyncNet — BUILT and RUN.** `sync_offset.py` wraps the vendored SyncNet pipeline; `salvage_crops.py` recovers offsets from a crashed run's crops (no re-trim/re-detect). venv `~/.venvs/sup-52486-syncnet`. Sign convention: **+ms = audio leads video**; 40 ms/frame.
+- **SyncNet — BUILT and RUN.** venv `~/.venvs/sup-52486-syncnet`. Sign convention: **+ms = audio leads video**; 40 ms/frame.
 - **Two content sets tested** (each source + rendition), 6–13 timings each:
   - `0_mq6kac22` — src 2160p/60, rendition 1080p/30. Flat **+80 ms (2 fr)** audio-lead on BOTH. **Not** visually detectable.
   - `0_m6cmac6e` — src & rendition both 1080p/~24.92fps. Flat **~+40 ms (1 fr)**, a couple +80/+120 blips, 3 no-face, 1 weak. **Slight** visible audio-lead.
@@ -31,8 +32,9 @@ Planned method: **forced-alignment vs lip-closure** — ASR forced-alignment for
 - ffmpeg 6.1.1 on PATH; python 3.12; x86_64 WSL.
 
 ## Files
-- `sync_offset.py` — SyncNet CLI wrapper (`--at` timings, `--window`, `--vshift`; sign convention in header).
-- `salvage_crops.py` — recover offsets from a crashed run's surviving crops (eval-only, no re-trim/S3FD).
+**Tool (moved out):** `sync_offset.py`, `salvage_crops.py`, and the vendored SyncNet pipeline now live in the `tools` repo at `tools/syncnet-lipsync/` — not here.
+
+**This folder (case record):**
 - `results/*.md` — saved per-content offset tables (`0_mq6kac22_*`, `0_m6cmac6e_*`).
 - `SYNCNET_PLAN.md` — original SyncNet implementation plan (now done).
 - `lipsync-discussion.md`, `lipsync-csm-note.md` — earlier diagnostic notes (out-of-scope playback material; history only).
