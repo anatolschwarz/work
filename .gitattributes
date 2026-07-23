@@ -1,0 +1,5 @@
+# Normalize line endings; scripts destined for the Linux remote must be LF.
+* text=auto
+*.sh text eol=lf
+*.py text eol=lf
+*.php text eol=lf
