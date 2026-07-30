@@ -1,7 +1,6 @@
 <?php
 /*****************************
 	Change log: 
-	2026-07-24 - CO Edit test, by anatol
 	2025-04-21 - fixed the sessionName creation on convert flow
 	2025-06-08 - supports '-2' flv, by switching to flv '-1'
 	2025-06-11 -
